@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Random chess</title>
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
     <script src="https://chessboardjs.com/js/chessboard-1.0.0.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -12,56 +12,77 @@
 
 </head>
 <body>
-    <style>
-        .whiteSquare {
-  background-image: url(my-images/light3-60.jpg);
-  width: 53;
-  height: 53;
-}
+  <style>
+    * {
+        font-family: sans-serif;
+    }
+    
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .container {
+        display: flex;
+        justify-content: space-between;
+        margin: 5px;
+    }
 
-.highlightWhiteSquare {
-  background-image: url(my-images/flickr-light-60.jpg);
-  width: 53;
-  height: 53;
-}
+    #board {
+        height: 70vh;
+        width: 49vw;
+        margin: auto;
+    }
+    
+    .white-1e1d7 {
+        background-color: #bb5746;
+        color: #b58863;
+    }
 
-.highlightBlackSquare {
-  background-image: url(my-images/dark2-60.jpg);
-  width: 53;
-  height: 53;
-}
-/* white square */
-.white-1e1d7 {
-  background-color: #bb5746;
-  background-size:100%;
-  color: #b58863;
-}
+    .black-3c85d {
+        background-color: #f5dbc3;
+        color: #f0d9b5;
+    }
 
-/* black square */
-.black-3c85d {
-  background-color:#f5dbc3;
-  background-size:100%;
-  color: #f0d9b5;
-}
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #board {
+            width: 103.5% !important;
+            height: auto;
+            margin: 0;
+            margin-left:3%;
+            padding: 0;
+        }
 
-*{
-    font-family: sans-serif;
-}
+        .scoreboard {
+            width: 100%;
+            text-align: center;
+            background: white;
+            padding: 5px;
+        }
+        .scoreboard + #board {
+            margin-top: 0;
+        }
+    }
+</style>
 
-    </style>
-    <div style="display: flex; justify-content: space-between; margin: 20px;">
-        <div style="width: 25%;">
-            <h2 id="blackw">Black wins: 0</h2>
-            <p>sikidibi dop dop yessss</p>
-        </div>
-        <div id="board" style="height: 70vh; width: 49%;margin: auto;"></div>
-        <div style="width: 25%;">
-            <div style="float: right;">
-            <h2 id="whitewins">White wins: 0</h2>
-            <p>şip dibidi şipp</p>
-        </div>
-        </div>
+<div class="container">
+    <div class="scoreboard">
+        <h2 id="blackw">Black wins: 0</h2>
     </div>
+    <div id="board"></div>
+    <div class="scoreboard">
+        <h2 id="whitewins">White wins: 0</h2>
+    </div>
+</div>
+
+
     
     
     <script>
@@ -148,7 +169,7 @@
         if(game.turn() === 'w') bmovess.play();
         else wmovess.play();
         
-        setTimeout(makeRandomMove, 100);
+        setTimeout(makeRandomMove, 150);
       }
       
       setTimeout(makeRandomMove, 1000);
