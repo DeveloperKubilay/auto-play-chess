@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Chess</title>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+    <script src="https://chessboardjs.com/js/chessboard-1.0.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+
+</head>
+<body>
+  <style>
+    * {
+        font-family: sans-serif;
+    }
+    
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .container {
+        display: flex;
+        justify-content: space-between;
+        margin: 5px;
+    }
+
+    #board {
+        height: 70vh;
+        width: 49vw;
+        margin: auto;
+    }
+    
+    .white-1e1d7 {
+        background-color: #bb5746;
+        color: #b58863;
+    }
+
+    .black-3c85d {
+        background-color: #f5dbc3;
+        color: #f0d9b5;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #board {
+            width: 103.5% !important;
+            height: auto;
+            margin: 0;
+            margin-left:3%;
+            padding: 0;
+        }
+
+        .scoreboard {
+            width: 100%;
+            text-align: center;
+            background: white;
+            padding: 5px;
+        }
+        .scoreboard + #board {
+            margin-top: 0;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="scoreboard">
+        <h2 id="blackw">Black wins: 0</h2>
+    </div>
+    <div id="board"></div>
+    <div class="scoreboard">
+        <h2 id="whitewins">White wins: 0</h2>
+    </div>
+</div>
+
+
+    
+    
+    <script>
+      var whitewin = 0;
+      var blackwin = 0;
+
+      var ty = "white";
+      var flip = false;
+      const board = Chessboard('board',{
+       // snapbackSpeed: 300,
+       // snapSpeed: 100,
+       moveSpeed: 30,
+        pieceTheme: function(piece) {
+          return 'https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/'+piece.toLowerCase()+'.png';
+        },
+        position: 'start'
+            });
+            var xa = false;
+            const game = new Chess();
+            const wmovess = new Audio('https://images.chesscomfiles.com/chess-themes/sounds/_MP3_/metal/move-self.mp3');
+            const bmovess = new Audio('https://images.chesscomfiles.com/chess-themes/sounds/_MP3_/metal/move-opponent.mp3');
+            const captures = new Audio('https://images.chesscomfiles.com/chess-themes/sounds/_MP3_/metal/capture.mp3');
+            const end = new Audio('https://images.chesscomfiles.com/chess-themes/sounds/_MP3_/metal/game-end.mp3');
+            
+            
+            function makeRandomMove() {
+              // Evaluate position and predict winner
+              let evaluation = 0;
+              for (let piece of game.board().flat()) {
+                if (!piece) continue;
+                let value = 0;
+                switch (piece.type) {
+                  case 'p': value = 1; break;
+                  case 'n': case 'b': value = 3; break;
+                  case 'r': value = 5; break;
+                  case 'q': value = 9; break;
+                }
+                evaluation += piece.color === 'w' ? value : -value;
+              }
+              if (Math.abs(evaluation) > 3) {
+                console.log("Likely winner: " + (evaluation > 0 ? "White" : "Black"), evaluation);
+              }
+
+              
+        let moves = game.moves();
+      
+        if (game.game_over()) {
+          if(xa) return;
+          end.play();
+          xa = true;
+          if (game.in_draw()) {
+            console.log('DRAW');
+          } else if (game.in_checkmate()) {
+            let winner = game.turn() === 'w' ? 'Black' : 'White';
+            console.log('Won ' + winner);
+            if(winner == "White"){
+                whitewin++;
+                document.getElementById("whitewins").innerHTML = "White wins: "+whitewin;
+            }else{
+                blackwin++;
+                document.getElementById("blackw").innerHTML = "Black wins: "+blackwin;
+            }
+          }
+
+          setTimeout(() => {
+              xa = false;
+              board.position('start');
+              game.reset();
+              makeRandomMove();
+          }, game.in_draw() ? 5000 : 10000);
+        }
+        
+        let randomIdx = Math.floor(Math.random() * moves.length);
+        let move = moves[randomIdx];
+        game.move(move);
+        board.position(game.fen());
+
+        if (game.in_check()) {
+          captures.play();
+          console.log('Check');
+        }
+        if(game.turn() === 'w') bmovess.play();
+        else wmovess.play();
+        
+        setTimeout(makeRandomMove, 500);
+      }
+      
+      setTimeout(makeRandomMove, 1000);
+      
+      </script>
+</body>
+</html>
