@@ -102,36 +102,15 @@
             });
             var xa = false;
             const game = new Chess();
-            const wmovess = new Audio('https://images.chesscomfiles.com/chess-themes/sounds/_MP3_/metal/move-self.mp3');
-            const bmovess = new Audio('https://images.chesscomfiles.com/chess-themes/sounds/_MP3_/metal/move-opponent.mp3');
-            const captures = new Audio('https://images.chesscomfiles.com/chess-themes/sounds/_MP3_/metal/capture.mp3');
-            const end = new Audio('https://images.chesscomfiles.com/chess-themes/sounds/_MP3_/metal/game-end.mp3');
-            
             
             function makeRandomMove() {
-              // Evaluate position and predict winner
-              let evaluation = 0;
-              for (let piece of game.board().flat()) {
-                if (!piece) continue;
-                let value = 0;
-                switch (piece.type) {
-                  case 'p': value = 1; break;
-                  case 'n': case 'b': value = 3; break;
-                  case 'r': value = 5; break;
-                  case 'q': value = 9; break;
-                }
-                evaluation += piece.color === 'w' ? value : -value;
-              }
-              if (Math.abs(evaluation) > 3) {
-                console.log("Likely winner: " + (evaluation > 0 ? "White" : "Black"), evaluation);
-              }
+         
 
               
         let moves = game.moves();
       
         if (game.game_over()) {
           if(xa) return;
-          end.play();
           xa = true;
           if (game.in_draw()) {
             console.log('DRAW');
@@ -160,13 +139,6 @@
         game.move(move);
         board.position(game.fen());
 
-        if (game.in_check()) {
-          captures.play();
-          console.log('Check');
-        }
-        if(game.turn() === 'w') bmovess.play();
-        else wmovess.play();
-        
         setTimeout(makeRandomMove, 500);
       }
       
